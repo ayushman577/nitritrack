@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =====================================================
+// USER
+// =====================================================
+
+model User {
+  id String @id @default(cuid())
+
+  name         String?
+  email        String  @unique
+  passwordHash String
+
+  phone String?
+
+  emailVerifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  otps     Otp[]
+  sessions Session[]
+  items    Item[]
+}
+
+// =====================================================
+// OTP
+// =====================================================
+
+model Otp {
+  id String @id @default(cuid())
+
+  email    String
+  codeHash String
+  purpose  OtpPurpose
+
+  name         String?
+  phone        String?
+  passwordHash String?
+
+  expiresAt DateTime
+
+  attempts Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  userId String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+}
+
+// =====================================================
+// OTP PURPOSE
+// =====================================================
+
+enum OtpPurpose {
+  REGISTER
+  RESET_PASSWORD
+}
+
+// =====================================================
+// SESSION
+// =====================================================
+
+model Session {
+  id String @id @default(cuid())
+
+  token String @unique
+
+  userId String
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// =====================================================
+// LOST / FOUND ITEM
+// =====================================================
+
+model Item {
+  id String @id @default(cuid())
+
+  ownerId String
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  type ItemType
+
+  category ItemCategory
+
+  title String
+
+  description String?
+
+  location String
+
+  itemDate DateTime
+
+  imageUrl String?
+
+  status ItemStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  expiresAt DateTime
+
+  warningSentAt DateTime?
+
+  closedAt DateTime?
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([type])
+  @@index([category])
+  @@index([expiresAt])
+}
+
+// =====================================================
+// ITEM TYPE
+// =====================================================
+
+enum ItemType {
+  LOST
+  FOUND
+}
+
+// =====================================================
+// ITEM STATUS
+// =====================================================
+
+enum ItemStatus {
+  ACTIVE
+  CLOSED
+  EXPIRED
+}
+
+// =====================================================
+// ITEM CATEGORY
+// =====================================================
+
+enum ItemCategory {
+  ID_CARD
+  MONEY
+  WALLET
+  PHONE
+  LAPTOP
+  EARPHONES
+  WATCH
+  KEYS
+  BAG
+  BOOKS
+  CLOTHING
+  DOCUMENTS
+  ACCESSORIES
+  ELECTRONICS
+  OTHER
+}
