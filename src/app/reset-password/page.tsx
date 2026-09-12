@@ -193,62 +193,72 @@ function ResetPasswordForm() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0d1117] flex items-center justify-center px-4">
+    <main className="relative min-h-[100dvh] w-full bg-[#0a0a0c] font-sans text-[#f4f4f5] antialiased selection:bg-white selection:text-[#0a0a0c] flex items-center justify-center p-3 sm:p-5">
+      {/* Ambient Spotlight */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-20 left-1/2 -z-10 h-[220px] w-[320px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.08)_0%,transparent_70%)] blur-[80px]"
+      />
+
+      {/* Background Precision Grid */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:24px_24px] sm:bg-[size:36px_36px] [mask-image:radial-gradient(ellipse_75%_55%_at_50%_25%,#000_35%,transparent_100%)]"
+      />
+
       <div className="w-full max-w-md">
-        <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-8 shadow-2xl">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#111114]/90 p-6 sm:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl">
 
           {/* Logo / Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-blue-500">
+          <div className="text-center mb-6">
+            <span className="block text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-500 mb-1">
+              SECURITY CREDENTIALS
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-[-0.035em] text-white">
               NITRiTrack
             </h1>
-
-            <p className="text-gray-400 mt-2">
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
               Reset your password
             </p>
           </div>
 
-          {/* Email */}
-          <div className="mb-6 text-center">
-            <p className="text-sm text-gray-400">
-              Enter the OTP sent to
+          {/* Email Target Notice */}
+          <div className="mb-5 rounded-xl border border-white/[0.06] bg-[#0a0a0c]/80 p-3 text-center">
+            <p className="text-[11px] font-mono text-zinc-400">
+              Verification code sent to
             </p>
-
-            <p className="text-white font-medium mt-1 break-all">
-              {email || "your email"}
+            <p className="text-xs font-mono font-bold text-white mt-0.5 break-all">
+              {email || "your registered email"}
             </p>
           </div>
 
-          {/* Error */}
+          {/* Error Notice */}
           {error && (
-            <div className="mb-5 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
-              <p className="text-sm text-red-400">
-                {error}
-              </p>
+            <div className="mb-4 rounded-xl border border-rose-500/25 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300 font-mono">
+              {error}
             </div>
           )}
 
-          {/* Success */}
+          {/* Success Notice */}
           {message && (
-            <div className="mb-5 rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3">
-              <p className="text-sm text-green-400">
-                {message}
-              </p>
+            <div className="mb-4 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-2.5 text-xs text-emerald-300 font-mono flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>{message}</span>
             </div>
           )}
 
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="space-y-5"
+            className="space-y-4"
           >
             {/* OTP */}
             <div>
               <label
                 htmlFor="otp"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 mb-1.5"
               >
-                Verification Code
+                Verification Code <span className="text-rose-400">*</span>
               </label>
 
               <input
@@ -264,25 +274,8 @@ function ResetPasswordForm() {
 
                   setOtp(value);
                 }}
-                placeholder="Enter 6-digit OTP"
-                className="
-                  w-full
-                  rounded-lg
-                  border
-                  border-[#30363d]
-                  bg-[#0d1117]
-                  px-4
-                  py-3
-                  text-center
-                  text-xl
-                  tracking-[0.5em]
-                  text-white
-                  outline-none
-                  transition
-                  focus:border-blue-500
-                  focus:ring-1
-                  focus:ring-blue-500
-                "
+                placeholder="------"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0a0a0c]/80 px-3.5 py-2.5 sm:py-3 text-center font-mono text-xl tracking-[0.5em] text-white placeholder:text-zinc-700 outline-none transition-all focus:border-white/[0.28] focus:bg-[#0e0e11]"
               />
             </div>
 
@@ -290,9 +283,9 @@ function ResetPasswordForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 mb-1.5"
               >
-                New Password
+                New Password <span className="text-rose-400">*</span>
               </label>
 
               <input
@@ -303,22 +296,8 @@ function ResetPasswordForm() {
                 onChange={(e) =>
                   setPassword(e.target.value)
                 }
-                placeholder="Enter new password"
-                className="
-                  w-full
-                  rounded-lg
-                  border
-                  border-[#30363d]
-                  bg-[#0d1117]
-                  px-4
-                  py-3
-                  text-white
-                  outline-none
-                  transition
-                  focus:border-blue-500
-                  focus:ring-1
-                  focus:ring-blue-500
-                "
+                placeholder="Enter new password (min. 8 chars)"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0a0a0c]/80 px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder:text-zinc-600 outline-none transition-all focus:border-white/[0.28] focus:bg-[#0e0e11]"
               />
             </div>
 
@@ -326,9 +305,9 @@ function ResetPasswordForm() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 mb-1.5"
               >
-                Confirm Password
+                Confirm Password <span className="text-rose-400">*</span>
               </label>
 
               <input
@@ -342,21 +321,7 @@ function ResetPasswordForm() {
                   )
                 }
                 placeholder="Confirm new password"
-                className="
-                  w-full
-                  rounded-lg
-                  border
-                  border-[#30363d]
-                  bg-[#0d1117]
-                  px-4
-                  py-3
-                  text-white
-                  outline-none
-                  transition
-                  focus:border-blue-500
-                  focus:ring-1
-                  focus:ring-blue-500
-                "
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0a0a0c]/80 px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder:text-zinc-600 outline-none transition-all focus:border-white/[0.28] focus:bg-[#0e0e11]"
               />
             </div>
 
@@ -367,75 +332,72 @@ function ResetPasswordForm() {
                 loading ||
                 otp.length !== 6
               }
-              className="
-                w-full
-                rounded-lg
-                bg-blue-600
-                px-4
-                py-3
-                font-semibold
-                text-white
-                transition
-                hover:bg-blue-500
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-              "
+              className="group relative w-full overflow-hidden rounded-xl bg-white py-3 text-xs sm:text-sm font-bold text-[#0a0a0c] transition-all duration-300 hover:bg-zinc-200 hover:shadow-[0_0_28px_rgba(255,255,255,0.2)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 flex items-center justify-center gap-2 mt-1"
             >
-              {loading
-                ? "Resetting Password..."
-                : "Reset Password"}
+              {!loading && (
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-black/10 to-transparent pointer-events-none" />
+              )}
+
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="h-4 w-4 animate-spin text-[#0a0a0c]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Resetting Password...</span>
+                </div>
+              ) : (
+                <span>Reset Password &rarr;</span>
+              )}
             </button>
           </form>
 
           {/* Resend OTP */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-400">
-              Didn't receive the OTP?
-            </p>
+          <div className="mt-5 text-center text-xs">
+            <span className="text-zinc-500 font-mono">
+              Didn't receive code?{" "}
+            </span>
 
             {resendTimer > 0 ? (
-              <p className="mt-2 text-sm text-gray-500">
-                Resend OTP{" "}
-                <span className="font-semibold text-blue-400">
-                  in {resendTimer}s
-                </span>
-              </p>
+              <span className="font-mono font-bold text-zinc-400">
+                Resend in {resendTimer}s
+              </span>
             ) : (
               <button
                 type="button"
                 onClick={handleResendOTP}
                 disabled={resending}
-                className="
-                  mt-2
-                  text-sm
-                  font-semibold
-                  text-blue-400
-                  transition
-                  hover:text-blue-300
-                  disabled:cursor-not-allowed
-                  disabled:opacity-50
-                "
+                className="font-mono font-bold text-white underline hover:opacity-80 transition-opacity disabled:opacity-50"
               >
-                {resending
-                  ? "Sending..."
-                  : "Resend OTP"}
+                {resending ? "Sending..." : "Resend OTP"}
               </button>
             )}
           </div>
 
           {/* Back to Login */}
-          <div className="mt-6 text-center">
+          <div className="mt-4 pt-4 border-t border-white/[0.06] text-center">
             <button
               type="button"
               onClick={() => router.push("/login")}
-              className="
-                text-sm
-                text-gray-500
-                transition
-                hover:text-gray-300
-              "
+              className="text-xs font-mono uppercase tracking-wider text-zinc-400 hover:text-white transition-colors"
             >
-              Back to Login
+              &larr; Back to Login
             </button>
           </div>
 
@@ -449,8 +411,8 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#0d1117] flex items-center justify-center px-4">
-          <div className="text-xs font-mono uppercase tracking-widest text-gray-400">
+        <main className="relative min-h-[100dvh] w-full bg-[#0a0a0c] font-sans text-[#f4f4f5] flex items-center justify-center">
+          <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-500">
             Loading...
           </div>
         </main>
