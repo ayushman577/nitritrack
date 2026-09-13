@@ -6,7 +6,10 @@ import { prisma } from "@/lib/prisma";
 import { sendOTPEmail } from "@/lib/email";
 
 const requestOtpSchema = z.object({
-  email: z.string().trim().email(),
+  email: z
+    .string()
+    .trim()
+    .email("Please provide a valid email address."),
 });
 
 export async function POST(request: Request) {
@@ -28,7 +31,10 @@ export async function POST(request: Request) {
 
     const email = parsed.data.email.toLowerCase();
 
-    // Only NIT Rourkela email addresses are allowed.
+    /*
+     * STEP 1:
+     * Check whether the email belongs to NIT Rourkela.
+     */
     if (!email.endsWith("@nitrkl.ac.in")) {
       return NextResponse.json(
         {
@@ -41,6 +47,10 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+     * STEP 2:
+     * Check whether the email is registered.
+     */
     const user = await prisma.user.findUnique({
       where: {
         email,
@@ -51,7 +61,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message:
-            "No account found with this NIT Rourkela email address.",
+            "No account found with this NIT Rourkela email address. Please register first.",
         },
         {
           status: 404,
@@ -59,6 +69,10 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+     * STEP 3:
+     * Generate OTP only after the domain and account checks pass.
+     */
     const otp = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
@@ -67,14 +81,22 @@ export async function POST(request: Request) {
       Date.now() + 10 * 60 * 1000
     );
 
-    // Remove previous OTPs for this email.
+    /*
+     * STEP 4:
+     * Delete only previous password-reset OTPs.
+     * Registration OTPs will not be affected.
+     */
     await prisma.otp.deleteMany({
       where: {
         email,
+        purpose: "RESET_PASSWORD",
       },
     });
 
-    // Store only a hash of the OTP in the database.
+    /*
+     * STEP 5:
+     * Store only the hashed OTP in the database.
+     */
     const codeHash = createHash("sha256")
       .update(otp)
       .digest("hex");
@@ -89,22 +111,26 @@ export async function POST(request: Request) {
       },
     });
 
-    // Send the actual OTP to the user's email.
+    /*
+     * STEP 6:
+     * Send the actual OTP to the registered email.
+     */
     await sendOTPEmail(email, otp);
-
-    return NextResponse.json({
-      message: "OTP sent successfully.",
-    });
-  } catch (error) {
-    console.error(
-      "REQUEST OTP ERROR:",
-      error
-    );
 
     return NextResponse.json(
       {
-        message:
-          "Failed to send OTP. Please try again.",
+        message: "OTP sent successfully.",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error("REQUEST OTP ERROR:", error);
+
+    return NextResponse.json(
+      {
+        message: "Failed to send OTP. Please try again.",
       },
       {
         status: 500,
